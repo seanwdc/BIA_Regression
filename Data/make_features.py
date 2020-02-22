@@ -43,10 +43,8 @@ standardized_vals = pd.DataFrame(standardized_vals, columns = quant_var)
 qual_var = list(train_df.columns[train_df.dtypes == 'object'])
 qual_var_one_hot = pd.get_dummies(train_df[qual_var], prefix = qual_var, columns =  qual_var)
 qual_var_label = train_df[qual_var].apply(preprocessing.LabelEncoder().fit_transform)
-# print(qual_var_label)
-# print(qual_var_one_hot)
 
-# Dataset1
+# Different Datasets
 one_hot_final = pd.merge(standardized_vals, qual_var_one_hot, left_index = True, right_index = True)
 one_hot_final = pd.merge(y, one_hot_final, left_index= True, right_index = True)
 # print(one_hot_final)
