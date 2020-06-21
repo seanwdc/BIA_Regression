@@ -2,25 +2,28 @@ import pandas as pd
 import numpy as np
 import math
 import matplotlib.pyplot as pyplot
-import seaborn as sns
 from sklearn import preprocessing
 
-train_df = pd.read_csv('train.csv')
+train_df = pd.read_csv('./train.csv')
 train_df['SalePrice'] = train_df['SalePrice'].apply(lambda x: math.log(x))
 
 
 # FEATURE SELECTION based on missing data, relevance, balance of the data, and repeated columns
-insufficient_data = ['Alley', 'Fence', 'MiscFeature', 'PoolQC', 
+insufficient_features = ['Alley', 'Fence', 'MiscFeature', 'PoolQC', 
                      'FireplaceQu', 'LotFrontage']
-imbalanced_data = ['3SsnPorch','LandSlope', 'LowQualFinSF',
+imbalanced_features = ['3SsnPorch','LandSlope', 'LowQualFinSF',
                    'PoolArea', 'RoofMatl', 'Street', 'Utilities']
-nonsense_data = ['Condition2','BsmtHalfBath','YrSold','Id']
-train_df.drop(insufficient_data + imbalanced_data + nonsense_data, axis =1, inplace = True)
+irrelevant_features = ['Condition2','BsmtHalfBath','YrSold','Id']
+train_df.drop(imbalanced_features + insufficient_features + irrelevant_features, axis =1, inplace = True)
 
 # LOW CORRELATIONS
+test = train_df.corr()
+print(test)
+
 low_corr = ['MiscVal', 'BsmtFinSF2']
 high_corr = ['GarageCars', 'GarageYrBlt', 'TotalRmsAbvGrd', 'TotalBsmtSF']
 train_df.drop(low_corr, axis = 1, inplace= True)
+print('hello world')
 
 # Dealing with missing data
 train_df.update(train_df[['BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2']].fillna('No Basement'))
@@ -39,7 +42,7 @@ quant_var = list(train_df.columns[train_df.dtypes != 'object'])
 standardized_vals = preprocessing.StandardScaler().fit_transform(train_df[quant_var])
 standardized_vals = pd.DataFrame(standardized_vals, columns = quant_var)
 
-# One hot encoding for Linear Regression
+# One hot encoding
 qual_var = list(train_df.columns[train_df.dtypes == 'object'])
 qual_var_one_hot = pd.get_dummies(train_df[qual_var], prefix = qual_var, columns =  qual_var)
 qual_var_label = train_df[qual_var].apply(preprocessing.LabelEncoder().fit_transform)
