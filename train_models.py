@@ -8,7 +8,6 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, train_test
 
 one_hot_df = pd.read_csv('Data/one_hot_df.csv')
 label_df = pd.read_csv('Data/label_df.csv')
-
 y = one_hot_df['SalePrice']
 X = one_hot_df.drop(['SalePrice'], axis =1)
 
@@ -73,7 +72,7 @@ random_grid = {'n_estimators': n_estimators,
                'bootstrap': bootstrap}
 
 rf = RandomForestRegressor()
-rf_random = RandomizedSearchCV(estimator = rf, param_distributions = random_grid, n_iter = 25, cv =2, verbose = 2, random_state = 42, n_jobs = -1, scoring = 'neg_root_mean_squared_error')
+rf_random = RandomizedSearchCV(estimator = rf, param_distributions = random_grid, n_iter = 25, cv =2, verbose = 2, random_state = 42, n_jobs = -1, scoring = 'neg_root_mean_squared_error', bootstrap = True)
 rf_random.fit(X, y)
 print('THIS IS THE BEST SCORE')
 print(-rf_random.best_score_)
@@ -81,12 +80,12 @@ print('THIS IS THE BEST PARAMS')
 print(rf_random.best_params_)
 
 param_grid = {
-    'bootstrap': [False],
     'max_depth': [37,40,43],
     'min_samples_leaf': [1],
     'min_samples_split': [2],
     'max_features' : ['sqrt'],
-    'n_estimators': [675,700]
+    'n_estimators': [800],
+    'bootstrap': [True]
 }
 
 rf = RandomForestRegressor()
